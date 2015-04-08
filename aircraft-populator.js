@@ -9,7 +9,7 @@ var xml2js = require('xml2js');
 var rest = require('restler');
 var crc = require('crc');
 
-var firebusRef = new Firebase('https://firebus.firebaseio.com/');
+var firebusRef = new Firebase('https://nextbus-dev.firebaseio.com/');
 
 var lastTime = Date.now() - 3600000;
 var updateInterval = 5000;
