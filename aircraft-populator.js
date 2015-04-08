@@ -1,20 +1,15 @@
-/* Populate Firebase from the NextBus XML API:
- agency list: http://webservices.nextbus.com/service/publicXMLFeed?command=agencyList
- route list: http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=sf-muni
- vehic loc : http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&t=1362432121000
- */
-
 var Firebase = require('firebase');
+var GeoFire = require('geofire');
 var xml2js = require('xml2js');
 var rest = require('restler');
-var crc = require('crc');
 
-var firebusRef = new Firebase('https://nextbus-dev.firebaseio.com/');
+var firebusRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
+var geoFire = new GeoFire(firebusRef.child("_geofire"));
 
 var lastTime = Date.now() - 3600000;
 var updateInterval = 5000;
 
-var agencyList = ['sf-muni'];
+var agencyList = ['dfw'];
 
 function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -49,16 +44,20 @@ function updateFirebaseWithData() {
             var parser = new xml2js.Parser();
             console.log(data);
             parser.parseString(data, function (err, result) {
-                if (result && result.body && result.body.vehicle) {
+                if (result && result.body && result.body.aircraft) {
                     var i = 0;
-                    result.body.vehicle.forEach(function (item) {
+                    result.body.aircraft.forEach(function (item) {
                         var vehicle = item['$'];
+                        var geoPosition = {};
                         if (vehicle && vehicle.id) {
-                            var firebaseId = crc.crc32(vehicle.id + vehicle.routeTag);
+                            var firebaseId = 21;
                             vehicle = traverseAndCoerce(vehicle);
-                            vehicle.ts = (Date.now() / 1000) - vehicle.secsSinceReport;
+                            vehicle.timestamp = (Date.now() / 1000) - vehicle.secsSinceReport;
                             vehicle.vtype = 'FJLMNXKT'.indexOf(vehicle.routeTag) > -1 ? 'train' : 'bus';
                             firebusRef.child(agency).child(firebaseId).set(vehicle);
+                            geoPosition[agency + firebaseId] = [32.899809, -97.040335]
+                            geoFire.set(getPosition);
+
                         }
                         else {
                             console.log("bad vehicle ->");

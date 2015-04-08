@@ -1,12 +1,16 @@
 {
-  "name": "firebus-populator",
-  "description": "firebus-populator",
+  "name": "nextaircraft",
   "version": "1.0.0",
-  "private": true,
+  "description": "firebase populator",
+  "main": "aircraft-populator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Santiago Esteva",
   "dependencies": {
-    "firebase": "0.5.1",
-    "xml2js": "0.2.6",
-    "restler": "2.0.1",
-    "crc": "0.2.0"
+    "firebase": "^2.2.3",
+    "geofire": "^3.2.2",
+    "restler": "^3.2.2",
+    "xml2js": "^0.4.6"
   }
 }
