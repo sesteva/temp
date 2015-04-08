@@ -10,7 +10,9 @@
   "dependencies": {
     "firebase": "^2.2.3",
     "geofire": "^3.2.2",
+    "lodash": "^3.6.0",
     "restler": "^3.2.2",
+    "rsvp": "^3.0.18",
     "xml2js": "^0.4.6"
   }
 }

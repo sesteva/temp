@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <body>
-    <aircraft id="1406" lat="37.76103" lon="-122.49157" origin="JFK" destination="DFW" secsSinceReport="30" />
+    <aircraft id="1406" lat="37.76103" lon="-122.49157" origin="JFK" destination="DFW" secsSinceReport="30" tag="AA2"/>
+    <aircraft id="6041" lat="37.76103" lon="-122.49157" origin="JFK" destination="DFW" secsSinceReport="30" tag="AA3"/>
 </body>
