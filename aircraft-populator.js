@@ -6,8 +6,11 @@ var fs = require('fs');
 var _ = require('lodash');
 var RSVP = require('rsvp');
 
-var firebusRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
-var geoFire = new GeoFire(firebusRef.child("_geofire"));
+// Dev Env
+//var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
+var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
+
+var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 
 var lastTime = Date.now() - 3600000;
 var updateInterval = 5000;
@@ -35,14 +38,17 @@ function createAircraft(data){
 
     if (aircraft && aircraft.id) {
         aircraft.id = parseInt(aircraft.id);
-        aircraft.lat = parseInt(aircraft.lat);
-        aircraft.lon = parseInt(aircraft.lon);
+        aircraft.lat = parseFloat(aircraft.lat);
+        aircraft.lon = parseFloat(aircraft.lon);
         aircraft.geoKey = location + ':' + aircraft.id;
         aircraft.timestamp = (Date.now() / 1000) - aircraft.secsSinceReport;
         aircraft.inbound = (aircraft.origin && aircraft.origin.indexOf(location) > -1) ? true : false;
 
+        // animation testing purposes
+        //aircraft.lat = aircraft.lat + (Math.floor(Math.random()*10)/1000);
+
         //save model to firebase
-        firebusRef.child(location).child(aircraft.id).set(aircraft);
+        firebaseRef.child(location).child(aircraft.id).set(aircraft);
         //save geohash to firebase
         geoFire.set(aircraft.geoKey, [aircraft.lat, aircraft.lon]);
     }
