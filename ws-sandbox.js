@@ -1,27 +1,35 @@
 var soap = require('soap');
 var RSVP = require('rsvp');
-var url = 'https://secure.flightexplorer.com/FastTrackWebService/FastTrackWS.asmx?WSDL';
-var loginArgs = {'userID': 'sesteva', 'pwd': 'ftwspwd3267'};
-var fastTrackClient,
-    sessionId = undefined;
 
-function createClient (){
+var Client = function(){
+    //this.airport = airport;
+    this.url = 'https://secure.flightexplorer.com/FastTrackWebService/FastTrackWS.asmx?WSDL';
+    this.loginArgs = {'userID': 'sesteva', 'pwd': 'ftwspwd3267'};
+    this.fastTrackClient = undefined;
+    this.sessionId = undefined;
+}
+
+
+Client.prototype.createClient = function(){
+    var that = this;
     var promise = new RSVP.Promise(function(resolve, reject) {
-        soap.createClient(url, function(err, client) {
+        soap.createClient(that.url, function(err, client) {
             if (err) {
                 console.log(err);
                 reject(err);
             }
+
+            that.fastTrackClient = client;
             resolve(client);
         });
     });
     return promise;
 }
 
-function login(){
+Client.prototype.login = function(){
+    var that = this;
     var promise = new RSVP.Promise(function(resolve, reject) {
-        fastTrackClient.Login(loginArgs, function (err, result) {
-            console.log(result);
+        that.fastTrackClient.Login(that.loginArgs, function (err, result) {
             //result.ReturnCode == 0: successfully logged in
             if (result.LoginResult.ReturnCode != 0) {
                 console.log('failed to login');
@@ -29,6 +37,10 @@ function login(){
             } else {
                 console.log('logged in');
                 //assign SessionID to webservice header. When successfully logged in, result.Message contains the SessionID.
+                that.sessionId = result.LoginResult.Message;
+                var header = {'tns:FEHeader': {'tns:SID': that.sessionId}};
+                console.log(header);
+                that.fastTrackClient.addSoapHeader(header);
                 resolve(result.LoginResult.Message);
             }
         });
@@ -36,14 +48,15 @@ function login(){
     return promise;
 }
 
-function getFlightsByAirport(airport){
+Client.prototype.getFlightsByAirport = function(airport){
+    var that = this;
     var args = {
         'airportID': 'DFW',
         'aiportBound': 'InAndOutBound',
         'flightStatus':'InFlightAndArrived'
     }
     var promise = new RSVP.Promise(function(resolve, reject) {
-        fastTrackClient.GetAirportFlightInfoInXML(args, function (err, result) {
+        that.fastTrackClient.GetAirportFlightInfoInXML(args, function (err, result) {
             if(err){
                 console.log(err);
                 reject(err);
@@ -56,17 +69,16 @@ function getFlightsByAirport(airport){
     return promise;
 }
 
-createClient().then(function(client){
-    fastTrackClient = client;
-    login().then(function(sessionId){
-        var header = {'tns:FEHeader': {'tns:SID': sessionId}};
-        fastTrackClient.addSoapHeader(header);
-        getFlightsByAirport().then(function(result){
-           console.log(result);
-        });
-    });
-});
+//var sandbox = new Client();
+//sandbox.createClient().then(function(){
+//    sandbox.login().then(function(){
+//        sandbox.getFlightsByAirport().then(function(result){
+//            console.log(result);
+//        })
+//    })
+//})
 
+exports.Client = Client;
 
 
 

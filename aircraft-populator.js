@@ -5,6 +5,7 @@ var rest = require('restler');
 var fs = require('fs');
 var _ = require('lodash');
 var RSVP = require('rsvp');
+var Client = require('./ws-sandbox').Client;
 
 // Dev Env
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
@@ -13,12 +14,20 @@ var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 
 var lastTime = Date.now() - 3600000;
-var updateInterval = 5000;
+var updateInterval = 50000;
 
 var location = 'DFW'; //or KDFW
 
 function getData(){
     var promise = new RSVP.Promise(function(resolve, reject) {
+        //var sandbox = new Client();
+        //sandbox.createClient().then(function(){
+        //    sandbox.login().then(function(){
+        //        sandbox.getFlightsByAirport().then(function(result){
+        //            console.log(result);
+        //        })
+        //    })
+        //})
         var parseString = require('xml2js').parseString;
         fs.readFile('mock.xml', 'utf8', function (err,data) {
             if (err) {
