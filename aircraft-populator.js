@@ -15,7 +15,7 @@ var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 var lastTime = Date.now() - 3600000;
 var updateInterval = 5000;
 
-var location = 'DFW';
+var location = 'DFW'; //or KDFW
 
 function getData(){
     var promise = new RSVP.Promise(function(resolve, reject) {
