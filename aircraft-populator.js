@@ -6,6 +6,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var RSVP = require('rsvp');
 var Client = require('./ws-sandbox').Client;
+var sandbox = new Client();
 
 // Dev Env
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
@@ -14,20 +15,12 @@ var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 
 var lastTime = Date.now() - 3600000;
-var updateInterval = 50000;
+var updateInterval = 5000;
 
 var location = 'DFW'; //or KDFW
 
-function getData(){
+function getMockedData(){
     var promise = new RSVP.Promise(function(resolve, reject) {
-        //var sandbox = new Client();
-        //sandbox.createClient().then(function(){
-        //    sandbox.login().then(function(){
-        //        sandbox.getFlightsByAirport().then(function(result){
-        //            console.log(result);
-        //        })
-        //    })
-        //})
         var parseString = require('xml2js').parseString;
         fs.readFile('mock.xml', 'utf8', function (err,data) {
             if (err) {
@@ -42,20 +35,38 @@ function getData(){
     return promise;
 }
 
+function getData(){
+    var promise = new RSVP.Promise(function(resolve, reject) {
+        var parseString = require('xml2js').parseString;
+        sandbox.createClient().then(function(){
+            sandbox.login().then(function(){
+                sandbox.getFlightsByAirport().then(function(data){
+                    parseString(data.GetAirportFlightInfoInXMLResult, function (err, result) {
+                        if (err) console.log(err);
+                        resolve(result);
+                    });
+                })
+            })
+        })
+    });
+    return promise;
+}
+
 function createAircraft(data){
     var aircraft = data['$'];
 
-    if (aircraft && aircraft.id) {
-        aircraft.id = parseInt(aircraft.id);
+    if (aircraft && aircraft.tag) {
+        aircraft.origin = aircraft.origin.trim();
+        aircraft.destination = aircraft.destination.trim();
+        aircraft.id =  aircraft.tag + aircraft.origin + aircraft.destination;
         aircraft.lat = parseFloat(aircraft.lat);
         aircraft.lon = parseFloat(aircraft.lon);
         aircraft.geoKey = location + ':' + aircraft.id;
-        aircraft.timestamp = (Date.now() / 1000) - aircraft.secsSinceReport;
-        aircraft.inbound = (aircraft.origin && aircraft.origin.indexOf(location) > -1) ? true : false;
+        aircraft.timestamp = new Date(aircraft.lastUpdate).getTime();
+        aircraft.inbound = (aircraft.origin && aircraft.origin.indexOf(location) > -1) ? false : true;
 
         // animation testing purposes
         //aircraft.lat = aircraft.lat + (Math.floor(Math.random()*10)/1000);
-
         //save model to firebase
         firebaseRef.child(location).child(aircraft.id).set(aircraft);
         //save geohash to firebase
@@ -69,8 +80,8 @@ function createAircraft(data){
 
 function updateFirebase(){
     getData().then(function(result){
-        if (result && result.body && result.body.aircraft) {
-            _.forEach(result.body.aircraft, createAircraft);
+        if (result && result.airport && result.airport.aircraft) {
+            _.forEach(result.airport.aircraft, createAircraft);
         }
     }, function(err){
         console.log(err);

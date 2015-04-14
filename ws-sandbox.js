@@ -18,9 +18,11 @@ Client.prototype.createClient = function(){
                 console.log(err);
                 reject(err);
             }
-
-            that.fastTrackClient = client;
-            resolve(client);
+            if(that.fastTrackClient === undefined) {
+                console.log('creating client');
+                that.fastTrackClient = client;
+            }
+            resolve();
         });
     });
     return promise;
@@ -29,6 +31,9 @@ Client.prototype.createClient = function(){
 Client.prototype.login = function(){
     var that = this;
     var promise = new RSVP.Promise(function(resolve, reject) {
+        if(that.sessionId !== undefined) {
+            return resolve();
+        }
         that.fastTrackClient.Login(that.loginArgs, function (err, result) {
             //result.ReturnCode == 0: successfully logged in
             if (result.LoginResult.ReturnCode != 0) {
@@ -61,7 +66,7 @@ Client.prototype.getFlightsByAirport = function(airport){
                 console.log(err);
                 reject(err);
             }
-            console.log(result);
+            //console.log(result);
             resolve(result);
 
         });

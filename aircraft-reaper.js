@@ -7,7 +7,7 @@ var GeoFire = require('geofire');
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
 var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
-var updateInterval = 200;
+var updateInterval = 400;
 var reapAge = 400; // 6 mins. We want to avoid flashing elements
 var locations = ['DFW'];
 
