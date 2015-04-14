@@ -7,7 +7,7 @@ var GeoFire = require('geofire');
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
 var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
-var updateInterval = 400;
+var updateInterval = 200;
 var reapAge = 400; // 6 mins. We want to avoid flashing elements
 var locations = ['DFW'];
 
@@ -17,7 +17,10 @@ function reap() {
     locations.forEach(function (item) {
         firebaseRef.child(item).once('value', function (s) {
             s.forEach(function (aircraftSnapshot) {
+                console.log(runTs);
+                console.log(aircraftSnapshot.val().timestamp);
                 var age = runTs - aircraftSnapshot.val().timestamp;
+                console.log(age);
                 if (age > reapAge) {
                     var geoKey = aircraftSnapshot.val().geoKey;
                     aircraftSnapshot.ref().remove();

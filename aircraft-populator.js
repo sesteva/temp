@@ -62,7 +62,8 @@ function createAircraft(data){
         aircraft.lat = parseFloat(aircraft.lat);
         aircraft.lon = parseFloat(aircraft.lon);
         aircraft.geoKey = location + ':' + aircraft.id;
-        aircraft.timestamp = new Date(aircraft.lastUpdate).getTime();
+        //aircraft.timestamp = new Date(aircraft.lastUpdate).getTime();
+        aircraft.timestamp = Date.now()  / 1000;
         aircraft.inbound = (aircraft.origin && aircraft.origin.indexOf(location) > -1) ? false : true;
 
         // animation testing purposes
