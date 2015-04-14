@@ -17,10 +17,7 @@ function reap() {
     locations.forEach(function (item) {
         firebaseRef.child(item).once('value', function (s) {
             s.forEach(function (aircraftSnapshot) {
-                console.log(runTs);
-                console.log(aircraftSnapshot.val().timestamp);
                 var age = runTs - aircraftSnapshot.val().timestamp;
-                console.log(age);
                 if (age > reapAge) {
                     var geoKey = aircraftSnapshot.val().geoKey;
                     aircraftSnapshot.ref().remove();
