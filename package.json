@@ -10,9 +10,9 @@
   "dependencies": {
     "firebase": "^2.2.3",
     "geofire": "^3.2.2",
+    "libxml-to-js": "^0.3.11",
     "lodash": "^3.6.0",
     "rsvp": "^3.0.18",
-    "soap": "^0.8.0",
-    "xml2js": "^0.4.6"
+    "soap": "^0.8.0"
   }
 }
