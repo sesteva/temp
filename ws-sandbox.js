@@ -2,7 +2,6 @@ var soap = require('soap');
 var RSVP = require('rsvp');
 
 var Client = function(){
-    //this.airport = airport;
     this.url = 'https://secure.flightexplorer.com/FastTrackWebService/FastTrackWS.asmx?WSDL';
     this.loginArgs = {'userID': 'sesteva', 'pwd': 'ftwspwd3267'};
     this.fastTrackClient = undefined;
@@ -68,7 +67,6 @@ Client.prototype.getFlightsByAirport = function(){
         'flightStatus':'InFlightAndArrived'
     }
     var promise = new RSVP.Promise(function(resolve, reject) {
-        //requested = Date.now() / 1000;
         console.log('requesting data');
         self.fastTrackClient.GetAirportFlightInfoInXML(args, function (err, result) {
             if(err){
@@ -83,34 +81,6 @@ Client.prototype.getFlightsByAirport = function(){
 
     return promise;
 }
-
-//Client.prototype.tryUntilSuccess = function(sandbox){
-//    var promise = new RSVP.Promise(function(resolve, reject) {
-//        sandbox.createClient().then(function () {
-//            sandbox.login().then(function () {
-//                sandbox.getFlightsByAirport().then(function (result) {
-//                    console.log('SUCCESS: ' + Date.now());
-//                    console.log(result);
-                    //resolve(result);
-                //}, function (err) {
-                //    console.log(err);
-                //    console.log('clean start and try again');
-                //    sandbox.sessionId = undefined;
-                //    sandbox.fastTrackClient = undefined;
-                //    sandbox.tryUntilSuccess(sandbox);
-                //})
-            //})
-        //})
-    //});
-    //return promise;
-//}
-
-// Testing Only
-//var sandbox = new Client();
-//setInterval((function () {
-//    sandbox.tryUntilSuccess(sandbox);
-//}), 5000);
-
 
 exports.Client = Client;
 

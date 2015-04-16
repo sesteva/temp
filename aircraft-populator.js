@@ -7,18 +7,9 @@ var Client = require('./ws-sandbox').Client;
 var parser = require('libxml-to-js');
 
 var sandbox = new Client();
-//var recieved= 0;
-//var parsed = 0;
-//var modeled = 0;
-//var total = 0;
 
 // Dev Env
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
-
-
-
-//var lastTime = _.now() - 3600000;
-//var updateInterval = 15000;
 
 var location = 'DFW'; //or KDFW
 
@@ -43,14 +34,12 @@ function getData(){
         sandbox.createClient().then(function(){
             sandbox.login().then(function(){
                 sandbox.getFlightsByAirport().then(function(data){
-                    //recieved = _.now() / 1000;
+                    console.log('parsing data');
                     parser(data.GetAirportFlightInfoInXMLResult, function (err, result) {
                         if (err) {
                             console.log(err);
                             return reject(err);
                         }
-                        //parsed = _.now() / 1000;
-                        //var elapsed = parsed - recieved;
                         data = null;
                         return resolve(result);
                     });
@@ -74,7 +63,6 @@ function createAircraft(data){
         aircraft['lat'] = parseFloat(aircraft.lat);
         aircraft['lon'] = parseFloat(aircraft.lon);
         aircraft['geoKey'] = location + ':' + aircraft.id;
-        //aircraft.timestamp = new Date(aircraft.lastUpdate).getTime();
         aircraft['timestamp'] = Date.now() / 1000;
         aircraft['inbound'] = (origin && origin.indexOf(location) > -1) ? false : true;
 
@@ -84,7 +72,6 @@ function createAircraft(data){
         firebaseRef.child(location).child(aircraft.id).set(aircraft);
         //save geohash to firebase
         geoFire.set(aircraft.geoKey, [aircraft.lat, aircraft.lon]);
-        //modeled = Date.now() / 1000;
         firebaseRef = null;
         geoFire = null;
         origin = null;
@@ -102,11 +89,8 @@ function updateFirebase(){
         console.log('new cycle:' + new Date());
         getData().then(function (result) {
             if (result && result.aircraft) {
+                console.log('inflating models');
                 _.forEach(result.aircraft, createAircraft);
-                //total = modeled - recieved;
-                //console.log('Total: ' + total);
-                //console.log('Parsing: ' + (parsed - recieved))
-                //console.log('Modeling: ' + (modeled - parsed));
                 console.log('------------');
                 result = null;
                 return resolve();
@@ -131,7 +115,3 @@ function start(){
 }
 
 start();
-
-//setInterval((function () {
-//    updateFirebase();
-//}), updateInterval);
