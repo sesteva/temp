@@ -5,7 +5,6 @@ Set of scripts to poll the FE API to populate a Firebase endpoint.
 ## aircraft-populator
 
 The populator consumes a WS client (ws-sandbox) and populates the model and the geohash to Firebase.
-This is done every 5000 ms.
 
 ## aircraft-reaper
 
@@ -54,3 +53,19 @@ Script:
 ## Run Reaper locally
 
     node aircraft-reaper.js
+
+## Memory Profiling
+
+Install headdump
+
+    npm install heapdump
+
+Then in aircraft-populator.js uncomment the following lines:
+
+    //var heapdump = require('heapdump');
+
+and
+
+    //heapdump.writeSnapshot();
+
+This generates a headsnapshot file which can be view amonf other ways using Chrome dev tools's profile tab.
