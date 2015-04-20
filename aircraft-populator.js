@@ -66,7 +66,7 @@ function createAircraft(data){
         aircraft['timestamp'] = Date.now() / 1000;
         aircraft['inbound'] = (origin && origin.indexOf(location) > -1) ? false : true;
 
-        var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
+        var firebaseRef = new Firebase("https://geotemp.firebaseio.com/");
         var geoFire = new GeoFire(firebaseRef.child("_geofire"));
         //save model to firebase
         firebaseRef.child(location).child(aircraft.id).set(aircraft, function(err){
