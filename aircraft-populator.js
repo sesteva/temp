@@ -69,7 +69,9 @@ function createAircraft(data){
         var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
         var geoFire = new GeoFire(firebaseRef.child("_geofire"));
         //save model to firebase
-        firebaseRef.child(location).child(aircraft.id).set(aircraft);
+        firebaseRef.child(location).child(aircraft.id).set(aircraft, function(err){
+            if(err) console.log('Data could not be saved: ' + err);
+        });
         //save geohash to firebase
         geoFire.set(aircraft.geoKey, [aircraft.lat, aircraft.lon]);
         firebaseRef = null;
