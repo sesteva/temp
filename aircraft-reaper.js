@@ -6,7 +6,7 @@ var RSVP = require('rsvp');
 
 // Dev Env
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
-var firebaseRef = new Firebase("https://geotemp.firebaseio.com/")
+var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 var updateInterval = 200;
 var reapAge = 400; // 6 mins. We want to avoid flashing elements
