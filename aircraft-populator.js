@@ -9,9 +9,10 @@ var parser = require('libxml-to-js');
 var sandbox = new Client();
 
 // Dev Env
-//var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
 
 var location = 'DFW'; //or KDFW
+var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
+var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 
 //function getMockedData(){
 //    var promise = new RSVP.Promise(function(resolve, reject) {
@@ -54,7 +55,7 @@ function createAircraft(data){
     var aircraft = undefined;
     aircraft = data['@'];
 
-    if (aircraft && aircraft.tag) {
+    if (aircraft && aircraft.tag && aircraft.Status != 'Hold') {
         var origin = aircraft.origin.trim();
         var destination = aircraft.destination.trim();;
         aircraft['origin'] = origin;
@@ -66,8 +67,7 @@ function createAircraft(data){
         aircraft['timestamp'] = Date.now() / 1000;
         aircraft['inbound'] = (origin && origin.indexOf(location) > -1) ? false : true;
 
-        var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
-        var geoFire = new GeoFire(firebaseRef.child("_geofire"));
+        
         //save model to firebase
         firebaseRef.child(location).child(aircraft.id).set(aircraft, function(err){
             if(err) console.log('Data could not be saved: ' + err);
