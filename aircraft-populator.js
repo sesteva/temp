@@ -87,22 +87,22 @@ function createAircraft(data){
 }
 
 function updateFirebase(){
-    var promise = new RSVP.Promise(function(resolve, reject) {
-        console.log('new cycle:' + new Date());
-        getData().then(function (result) {
-            if (result && result.aircraft) {
-                console.log('inflating models');
-                _.forEach(result.aircraft, createAircraft);
-                console.log('------------');
-                result = null;
-                return resolve();
-            }
-        }, function (err) {
-            console.log(err);
-            return reject(err);
-        })
-    });
-    return promise;
+    //var promise = new RSVP.Promise(function(resolve, reject) {
+    console.log('new cycle:' + new Date());
+    getData().then(function (result) {
+        if (result && result.aircraft) {
+            console.log('inflating models');
+            _.forEach(result.aircraft, createAircraft);
+            console.log('------------');
+            result = null;
+            return result;
+        }
+    }, function (err) {
+        console.log(err);
+        return err;
+    })
+    //});
+    //return promise;
 
 }
 
