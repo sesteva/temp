@@ -16,7 +16,7 @@ var reapAge = 400; // 6 mins. We want to avoid flashing elements
 function reap() {
     var promise = new RSVP.Promise(function(resolve, reject) {
         var runTs = Date.now() / 1000;
-        console.log(runTs);
+        //console.log(runTs);
         firebaseRef.child('DFW').once('value', function (s) {
             s.forEach(function (aircraftSnapshot) {
                 var age = runTs - aircraftSnapshot.val().timestamp;
