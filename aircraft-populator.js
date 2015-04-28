@@ -74,8 +74,8 @@ function createAircraft(data){
         });
         //save geohash to firebase
         geoFire.set(aircraft.geoKey, [aircraft.lat, aircraft.lon]);
-        firebaseRef = null;
-        geoFire = null;
+        //firebaseRef = null;
+        //geoFire = null;
         origin = null;
         destination = null;
         aircraft = null;
