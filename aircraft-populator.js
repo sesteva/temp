@@ -10,8 +10,7 @@ var sandbox = new Client();
 
 // Dev Env
 //var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
-//var geoFire = new GeoFire(firebaseRef.child("_geofire"));
-//var updateInterval = 5000;
+
 var location = 'DFW'; //or KDFW
 
 //function getMockedData(){
@@ -118,7 +117,3 @@ function start(){
 }
 
 start();
-
-//setInterval((function () {
-//    start();
-//}), updateInterval);
