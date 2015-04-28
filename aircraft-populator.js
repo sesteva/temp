@@ -116,4 +116,8 @@ function start(){
     })
 }
 
-start();
+//start();
+
+setInterval((function () {
+    updateFirebase();
+}), 5000);
