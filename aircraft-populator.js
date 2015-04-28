@@ -9,8 +9,9 @@ var parser = require('libxml-to-js');
 var sandbox = new Client();
 
 // Dev Env
-//var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
-var updateInterval = 5000;
+var firebaseRef = new Firebase('https://nextaircraft-dev.firebaseio.com/');
+var geoFire = new GeoFire(firebaseRef.child("_geofire"));
+//var updateInterval = 5000;
 var location = 'DFW'; //or KDFW
 
 //function getMockedData(){
@@ -66,8 +67,8 @@ function createAircraft(data){
         aircraft['timestamp'] = Date.now() / 1000;
         aircraft['inbound'] = (origin && origin.indexOf(location) > -1) ? false : true;
 
-        var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
-        var geoFire = new GeoFire(firebaseRef.child("_geofire"));
+        //var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
+        //var geoFire = new GeoFire(firebaseRef.child("_geofire"));
         //save model to firebase
         firebaseRef.child(location).child(aircraft.id).set(aircraft, function(err){
             if(err) console.log('Data could not be saved: ' + err);
@@ -116,8 +117,8 @@ function start(){
     })
 }
 
-//start();
+start();
 
-setInterval((function () {
-    start();
-}), updateInterval);
+//setInterval((function () {
+//    start();
+//}), updateInterval);
