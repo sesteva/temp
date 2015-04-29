@@ -20,7 +20,7 @@ function reap() {
         firebaseRef.child('DFW').once('value', function (s) {
             s.forEach(function (aircraftSnapshot) {
                 var age = runTs - aircraftSnapshot.val().timestamp;
-                console.log(age);
+                //console.log(age);
                 if (age > reapAge) {
                     var geoKey = aircraftSnapshot.val().geoKey;
                     aircraftSnapshot.ref().remove();
@@ -31,7 +31,7 @@ function reap() {
                     });
                 }
             });
-            console.log(new Date());
+            //console.log(new Date());
             return resolve();
         });
     });
