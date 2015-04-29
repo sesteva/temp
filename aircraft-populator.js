@@ -120,4 +120,4 @@ function start(){
 
 setInterval((function () {
     updateFirebase();
-}), 2000);
+}), 3000);
