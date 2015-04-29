@@ -54,8 +54,8 @@ function getData(){
 function createAircraft(data){
     var aircraft = undefined;
     aircraft = data['@'];
-
-    if (aircraft && aircraft.tag && aircraft.Status != 'Hold') {
+    var parked  = aircraft.lat == 32.8968 && aircraft.lon == -97.038;
+    if (aircraft && aircraft.tag && aircraft.Status != 'Hold' && !parked) {
         var origin = aircraft.origin.trim();
         var destination = aircraft.destination.trim();;
         aircraft['origin'] = origin;
@@ -120,4 +120,4 @@ function start(){
 
 setInterval((function () {
     updateFirebase();
-}), 5000);
+}), 2000);
