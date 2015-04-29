@@ -64,7 +64,7 @@ Client.prototype.getFlightsByAirport = function(){
     var args = {
         'airportID': 'DFW',
         'aiportBound': 'InAndOutBound',
-        'flightStatus':'InFlight'
+        'flightStatus':'InFlightAndArrived'
     }
     var promise = new RSVP.Promise(function(resolve, reject) {
         console.log('requesting data');
