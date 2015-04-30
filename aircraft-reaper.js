@@ -9,7 +9,7 @@ var RSVP = require('rsvp');
 var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/")
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
 var updateInterval = 200;
-var reapAge = 400; // 6 mins. We want to avoid flashing elements
+var reapAge = 60; // 1 min. We want to avoid flashing elements
 //var locations = ['DFW'];
 
 // This method removes old node entries based on attribute timestamp
