@@ -9,10 +9,9 @@ var parser = require('libxml-to-js');
 var sandbox = new Client();
 
 // Dev Env
-
-var location = 'DFW'; //or KDFW
 var firebaseRef = new Firebase("https://geoaircraft.firebaseio.com/");
 var geoFire = new GeoFire(firebaseRef.child("_geofire"));
+var location = 'DFW'; //or KDFW
 
 //function getMockedData(){
 //    var promise = new RSVP.Promise(function(resolve, reject) {
@@ -54,10 +53,11 @@ function getData(){
 function createAircraft(data){
     var aircraft = undefined;
     aircraft = data['@'];
+    var invalid = aircraft.lat == 200 && aircraft.lon == 200;
     var parked  = aircraft.lat == 32.8968 && aircraft.lon == -97.038;
-    if (aircraft && aircraft.tag && aircraft.Status != 'Hold' && !parked) {
+    if (aircraft && aircraft.tag && !invalid && aircraft.Status != 'Hold' && !parked) {
         var origin = aircraft.origin.trim();
-        var destination = aircraft.destination.trim();;
+        var destination = aircraft.destination.trim();
         aircraft['origin'] = origin;
         aircraft['destination'] = destination;
         aircraft['id'] =  aircraft.tag + origin + destination;
@@ -67,15 +67,12 @@ function createAircraft(data){
         aircraft['timestamp'] = Date.now() / 1000;
         aircraft['inbound'] = (origin && origin.indexOf(location) > -1) ? false : true;
 
-        
         //save model to firebase
         firebaseRef.child(location).child(aircraft.id).set(aircraft, function(err){
             if(err) console.log('Data could not be saved: ' + err);
         });
         //save geohash to firebase
         geoFire.set(aircraft.geoKey, [aircraft.lat, aircraft.lon]);
-        //firebaseRef = null;
-        //geoFire = null;
         origin = null;
         destination = null;
         aircraft = null;
@@ -87,37 +84,39 @@ function createAircraft(data){
 }
 
 function updateFirebase(){
-    //var promise = new RSVP.Promise(function(resolve, reject) {
     console.log('new cycle:' + new Date());
     getData().then(function (result) {
         if (result && result.aircraft) {
             console.log('inflating models');
-            _.forEach(result.aircraft, createAircraft);
+
+            _.forEach(result.aircraft, function(aircraft){
+                //console.log(aircraft);
+                createAircraft(aircraft);
+            });
             console.log('------------');
             result = null;
             return result;
         }
     }, function (err) {
         console.log(err);
-        return err;
-    })
-    //});
-    //return promise;
+        return reject(err);
+    });
 
 }
 
-function start(){
-    return updateFirebase().then(function(){
-        sandbox.fastTrackClient.lastResponse = null;
-        //heapdump.writeSnapshot();
-        return start();
-    },function(err){
-        console.log(err);
-    })
-}
+//function start(){
+//    return updateFirebase().then(function(){
+//        sandbox.fastTrackClient.lastResponse = null;
+//        heapdump.writeSnapshot();
+        //return start();
+    //},function(err){
+    //    console.log(err);
+    //})
+//}
 
 //start();
 
 setInterval((function () {
     updateFirebase();
 }), 5000);
+//updateFirebase();
